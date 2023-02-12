@@ -7,6 +7,13 @@ job_type = (
     ('Part Time', 'Part Time')
 )
 
+
+def image_upload(instance, filename):
+    image_name, extension = filename.split(".")
+    return "jobs/%s/%s.%s"%(instance.title, image_name, extension)
+
+
+
 class Job(models.Model):    # Table    
     title = models.CharField(max_length=100)    # Column
     # location = 
@@ -17,6 +24,8 @@ class Job(models.Model):    # Table
     salary = models.IntegerField(default=0)
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     experience = models.IntegerField(default=1)
+    # image = models.ImageField(upload_to='jobs/')
+    image = models.ImageField(upload_to=image_upload)
 
     def __str__(self):
         return self.title
