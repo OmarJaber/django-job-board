@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load bootstrap4 %}
+
 
 {% block body %}
     <!-- bradcam_area  -->
@@ -52,8 +54,15 @@
                     </div>
                     <div class="apply_job_form white-bg">
                         <h4>Apply for the job</h4>
-                        <form action="#">
-                            <div class="row">
+                        <form method="POST" enctype="multipart/form-data">
+                            
+                            {% csrf_token %}
+                            {% bootstrap_form form %}
+                            {% buttons %}
+                                <button class="boxed-btn3 w-100" type="submit">Apply Now</button>
+                            {% endbuttons %}
+
+                            <!-- <div class="row">
                                 <div class="col-md-6">
                                     <div class="input_field">
                                         <input type="text" placeholder="Your name">
@@ -91,7 +100,7 @@
                                         <button class="boxed-btn3 w-100" type="submit">Apply Now</button>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </form>
                     </div>
                 </div>
