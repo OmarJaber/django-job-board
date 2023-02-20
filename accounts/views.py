@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
-from .forms import SignUpForm
+from django.urls import reverse
+from .forms import SignUpForm, UserForm, ProfileForm
 from django.contrib.auth import authenticate, login
 from .models import Profile
 
@@ -29,17 +30,21 @@ def profile(request):
 
 
 def profile_edit(request):
+    profile = Profile.objects.get(user=request.user)
+    
     if request.method=='POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            return redirect('/accounts/profile')
+        userform = UserForm(request.POST, instance=request.user)
+        profileform = ProfileForm(request.POST, request.FILES, instance=profile)
+        if userform.is_valid() and profileform.is_valid():
+            userform.save()
+            myprofile = profileform.save(commit=False)
+            myprofile.user = request.user
+            myprofile.save()
+            
+            return redirect(reverse('accounts:profile'))
     else:
-        form = SignUpForm()
+        userform = UserForm(instance=request.user)
+        profileform = ProfileForm(instance=profile)
 
-    context = {"form": form}
+    context = {"userform": userform, "profileform": profileform}
     return render(request, "accounts/profile_edit.html", context)
